@@ -1,11 +1,16 @@
 # Testing egui and tokio
+
 Just my demo project on how one can use tokio to make a fluid egui user interface when processing data from the internet.
+
 The primitives are now located in the "lazy_async_promise" crate, which can be found on [crates.io](https://crates.io/crates/lazy_async_promise) 
 and [github](https://github.com/ChrisRega/lazy_async_promise).
+
 Maybe you will find them useful, too :)
 
 For this example we artificially emit the posts slowly to show a progress-bar :)
+
 We get both the tags and the posts slowed down like with the code from `blog_api.rs`
+
 ```rust
 fn make_request_buffer_slice<T: DeserializeOwned + Debug + Send + 'static>(
     url: &'static str,
@@ -37,6 +42,7 @@ pub fn make_tags_buffer() -> LazyVecPromise<Tag> {
 ```
 
 For getting a single post we use the `ImmediateValuePromise`:
+
 ```rust
 pub fn make_immediate_post_request(
     post_num: i64,
@@ -52,14 +58,17 @@ pub fn make_immediate_post_request(
     })
 }
 ```
+
 The specialty for egui is, that we don't actually get drawn / updated if nothing is going on.
+
 Imagine downloading the post without a spinner - nothing changes, no update call therefore no polling.
-But without polling we will never get notified about the finish. This will not happen in this use case since we would usually 
-use a spinner for indicating that we are fetching main page content. But imagine a select!-macro
+
+But without polling we will never get notified about the finish. This will not happen in this use case since we would usually use a spinner for indicating that we are fetching main page content. But imagine a select!-macro
 like future that waits for a message where a spinner would be a bad pattern (cpu usage, useless redraws,...).
 We would like to get the update callback here :)
 
 My solution to this problem was to store the context of egui in the app state.
+
 ```rust
 struct BlogClient {
     update_callback_ctx: Option<egui::Context>,
@@ -72,6 +81,7 @@ impl BlogClient {
     }
 }
 ```
+
 Since as of egui 0.21 Context is:
 
 ```rust
