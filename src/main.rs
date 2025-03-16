@@ -1,4 +1,4 @@
-use crate::egui::{ProgressBar, Ui as Ui};
+use crate::egui::{ProgressBar, Ui};
 use std::sync::Arc;
 mod blog_api;
 mod ui_helpers;

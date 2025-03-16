@@ -1,0 +1,3 @@
+[submodule "lazy_async_promise"]
+	path = lazy_async_promise
+	url = git@github.com:RandyMcMillan/lazy_async_promise.git

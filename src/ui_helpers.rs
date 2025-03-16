@@ -1,6 +1,6 @@
-use crate::{resolve_tags, timestamp_to_string, Post, Tag};
 use crate::egui;
-use crate::egui::{Align, Label, Layout, ScrollArea, Sense, Ui as Ui};
+use crate::egui::{Align, Label, Layout, ScrollArea, Sense, Ui};
+use crate::{resolve_tags, timestamp_to_string, Post, Tag};
 use egui_commonmark::CommonMarkViewer;
 use egui_extras::Column;
 
@@ -36,7 +36,11 @@ pub fn display_single_post(post: &mut Post, tags: &[Tag], ui: &mut Ui, edit_mode
     }
 }
 
-pub fn view_post_list(posts: &[Post], tags: Option<&[Tag]>, ui: &mut crate::egui::Ui) -> Option<i64> {
+pub fn view_post_list(
+    posts: &[Post],
+    tags: Option<&[Tag]>,
+    ui: &mut crate::egui::Ui,
+) -> Option<i64> {
     let mut selected_post = None;
     use egui_extras::TableBuilder;
     TableBuilder::new(ui)
