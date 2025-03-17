@@ -51,10 +51,10 @@ pub fn view_post_list(
         .column(Column::auto().resizable(true))
         .header(20.0, |mut header| {
             header.col(|ui| {
-                ui.heading("Title");
+                ui.heading("Block Hash");
             });
             header.col(|ui| {
-                ui.heading("Tags");
+                ui.heading("Height");
             });
             header.col(|ui| {
                 ui.heading("Date");
