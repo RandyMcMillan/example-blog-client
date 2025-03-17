@@ -83,7 +83,7 @@ impl BlogClient {
         let ctx = self.update_callback_ctx.clone().unwrap();
         move || {
             ctx.request_repaint();
-            println!("Update callback executed");
+            //println!("Update callback executed");
         }
     }
 
@@ -107,9 +107,9 @@ impl BlogClient {
                         post.edit_mode = true;
                     } else if post.edit_mode && ui.button("cancel").clicked() {
                         post.edit_mode = false;
-                        self.page = Page::ViewPost(PostState::from_promise(
-                            make_immediate_post_request(content.idx, self.update_callback()),
-                        ));
+                        //self.page = Page::ViewPost(PostState::from_promise(
+                            //make_immediate_post_request(content.idx, self.update_callback()),
+                        //));
                         return;
                     } else if post.edit_mode && ui.button("save").clicked() {
                         post.edit_mode = false;

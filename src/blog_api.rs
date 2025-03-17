@@ -12,35 +12,38 @@ use tokio::sync::mpsc::Sender;
 
 #[derive(Deserialize, Debug)]
 pub struct Post {
-    pub user: usize,
-    pub post: String,
-    pub outline: Option<String>,
-    pub title: String,
-    pub tags: Vec<usize>,
+	pub id: String,
+    //pub user: usize,
+    //pub post: String,
+    //pub outline: Option<String>,
+    //pub title: String,
+    //pub tags: Vec<usize>,
     pub timestamp: u128,
-    pub idx: i64,
+    //pub idx: i64,
 }
 
 #[derive(Deserialize, Debug)]
 pub struct PostUpload {
-    pub post: String,
-    pub title: String,
-    pub outline: Option<String>,
-    pub tags: Vec<usize>,
+    pub id: String,
+    //pub post: String,
+    //pub title: String,
+    //pub outline: Option<String>,
+    //pub tags: Vec<usize>,
 }
 
 impl From<Post> for PostUpload {
     fn from(value: Post) -> Self {
         PostUpload {
-            post: value.post,
-            title: value.title,
-            outline: value.outline,
-            tags: value.tags,
+            id: value.id,
+            //post: value.post,
+            //title: value.title,
+            //outline: value.outline,
+            //tags: value.tags,
         }
     }
 }
 
-const POSTS_URL: &str = "https://actix.vdop.org/posts";
+const POSTS_URL: &str = "https://mempool.space/api/v1/blocks/730000";
 const TAG_URL: &str = "https://actix.vdop.org/tags";
 const LOGIN_URL: &str = "https://actix.vdop.org/login";
 
@@ -72,6 +75,7 @@ pub fn timestamp_to_string(timestamp_millis: u128) -> String {
     let naive = chrono::NaiveDateTime::from_timestamp_millis(timestamp_millis as i64)
         .expect("Could not convert timestamp to datetime");
     let datetime: chrono::DateTime<chrono::Utc> = chrono::DateTime::from_utc(naive, chrono::Utc);
+    //println!("{}", datetime.format("%Y-%m-%d %H:%M:%S"));
     format!("{}", datetime.format("%Y-%m-%d %H:%M:%S"))
 }
 
@@ -96,12 +100,13 @@ fn make_request_buffer_slice<T: DeserializeOwned + Debug + Send + 'static>(
         let entries: Vec<T> = unpack_result!(response.json().await, tx);
         let total_entries = entries.len();
         for (num, entry) in entries.into_iter().enumerate() {
+            println!("{:?}\n{:?}", &entry, tx);
             send_data!(entry, tx);
             set_progress!(
                 Progress::from_fraction(num as u32, total_entries as u32),
                 tx
             );
-            tokio::time::sleep(Duration::from_millis(100)).await;
+            tokio::time::sleep(Duration::from_millis(400)).await;
         }
         set_finished!(tx);
     };
@@ -125,6 +130,7 @@ pub fn _make_lazy_single_post_request(post_num: i64) -> LazyValuePromise<Post> {
             tx
         );
         let post: Post = unpack_result!(response.json().await, tx);
+        println!("{:?}", &post);
         send_data!(post, tx);
         set_finished!(tx);
     };
@@ -132,12 +138,13 @@ pub fn _make_lazy_single_post_request(post_num: i64) -> LazyValuePromise<Post> {
 }
 
 pub fn make_immediate_post_request(
-    post_num: i64,
+    post_num: String,
     update_callback: impl Fn() + Send + 'static,
 ) -> ImmediateValuePromise<Post> {
     ImmediateValuePromise::new(async move {
         let response = reqwest::get(format!("{}/{}", POSTS_URL, post_num)).await?;
         let post: Post = response.json().await?;
+        println!("{:?}", post);
         update_callback();
         Ok(post)
     })
