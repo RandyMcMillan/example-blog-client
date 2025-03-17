@@ -43,7 +43,7 @@ impl From<Post> for PostUpload {
     }
 }
 
-const POSTS_URL: &str = "https://mempool.space/api/v1/blocks/730000";
+const POSTS_URL: &str = "https://mempool.space/api/v1/blocks";
 const TAG_URL: &str = "https://actix.vdop.org/tags";
 const LOGIN_URL: &str = "https://actix.vdop.org/login";
 
