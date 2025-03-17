@@ -72,6 +72,7 @@ pub fn timestamp_to_string(timestamp_millis: u128) -> String {
     let naive = chrono::NaiveDateTime::from_timestamp_millis(timestamp_millis as i64)
         .expect("Could not convert timestamp to datetime");
     let datetime: chrono::DateTime<chrono::Utc> = chrono::DateTime::from_utc(naive, chrono::Utc);
+    //println!("{}", datetime.format("%Y-%m-%d %H:%M:%S"));
     format!("{}", datetime.format("%Y-%m-%d %H:%M:%S"))
 }
 
@@ -101,7 +102,7 @@ fn make_request_buffer_slice<T: DeserializeOwned + Debug + Send + 'static>(
                 Progress::from_fraction(num as u32, total_entries as u32),
                 tx
             );
-            tokio::time::sleep(Duration::from_millis(100)).await;
+            tokio::time::sleep(Duration::from_millis(400)).await;
         }
         set_finished!(tx);
     };
@@ -125,6 +126,7 @@ pub fn _make_lazy_single_post_request(post_num: i64) -> LazyValuePromise<Post> {
             tx
         );
         let post: Post = unpack_result!(response.json().await, tx);
+        //println!("{:?}", &post);
         send_data!(post, tx);
         set_finished!(tx);
     };
@@ -138,6 +140,7 @@ pub fn make_immediate_post_request(
     ImmediateValuePromise::new(async move {
         let response = reqwest::get(format!("{}/{}", POSTS_URL, post_num)).await?;
         let post: Post = response.json().await?;
+        println!("{:?}", post);
         update_callback();
         Ok(post)
     })

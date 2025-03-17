@@ -83,7 +83,7 @@ impl BlogClient {
         let ctx = self.update_callback_ctx.clone().unwrap();
         move || {
             ctx.request_repaint();
-            println!("Update callback executed");
+            //println!("Update callback executed");
         }
     }
 
